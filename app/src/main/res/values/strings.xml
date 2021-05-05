@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">GnssCollector</string>
+    <string name="share_location">Share Location</string>
+    <string name="gnss_service_rationale">We are gathering your location information.</string>
+    <string name="default_error">Oops, something went wrong</string>
+</resources>

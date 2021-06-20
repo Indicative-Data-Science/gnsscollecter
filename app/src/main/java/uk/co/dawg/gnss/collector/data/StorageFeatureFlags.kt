@@ -1,15 +1,31 @@
 package uk.co.dawg.gnss.collector.data
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import javax.inject.Inject
+
 /**
  * Fake feature flag mechanism for testing. Only works at compile time.
  */
-object StorageFeatureFlags {
+class StorageFeatureFlags @Inject constructor(private val remoteConfig: FirebaseRemoteConfig) {
 
-    private const val DISABLE_ALL = false
+    val enableGnnsMeasurements
+        get() = remoteConfig.getBoolean(ENABLE_GNSS_STORING)
 
-    @Suppress("SimplifyBooleanWithConstants")
-    const val DISABLE_MEASUREMENTS_STORING = DISABLE_ALL || false
+    val enableAntennaMeasurements
+        get() = remoteConfig.getBoolean(ENABLE_ANTENNA_STORING)
 
-    @Suppress("SimplifyBooleanWithConstants")
-    const val DISABLE_ANTENNA_STORING = DISABLE_ALL || false
+    companion object {
+
+        /**
+         * Defines is values for GNSS data should be stored in the firebase store. If false,
+         * they are never uploaded.
+         */
+        const val ENABLE_GNSS_STORING: String = "ENABLE_GNSS_STORING"
+
+        /**
+         * Defines is values for antenna data should be stored in the firebase store. If false,
+         * they are never uploaded.
+         */
+        const val ENABLE_ANTENNA_STORING: String = "ENABLE_ANTENNA_STORING"
+    }
 }

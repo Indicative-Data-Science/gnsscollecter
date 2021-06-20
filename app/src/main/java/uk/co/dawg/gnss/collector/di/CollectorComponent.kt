@@ -17,6 +17,7 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class,
         StorageModule::class,
         GnssCollectorService.Module::class,
+        FirebaseModule::class,
         MainActivity.Module::class
     ]
 )

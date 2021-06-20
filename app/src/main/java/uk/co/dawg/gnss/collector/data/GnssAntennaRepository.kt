@@ -10,12 +10,13 @@ import uk.co.dawg.gnss.collector.di.FirestoreDB
 import javax.inject.Inject
 
 class GnssAntennaRepository @Inject constructor(
-    @FirestoreDB(FirestoreDB.Type.ANTENNA) val store: CollectionReference
+    @FirestoreDB(FirestoreDB.Type.ANTENNA) val store: CollectionReference,
+    private val storageFeatureFlags: StorageFeatureFlags
 ) {
 
     suspend fun upload(measurements: List<GnssAntennaInfo>) {
 
-        if (StorageFeatureFlags.DISABLE_ANTENNA_STORING) return
+        if (!storageFeatureFlags.enableAntennaMeasurements) return
 
         withContext(Dispatchers.IO) {
             measurements.forEach {

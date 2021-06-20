@@ -19,6 +19,18 @@ fun View.showErrorSnackbar(message: String?) {
         .show()
 }
 
+fun View.showInfoSnackbar(message: String?) {
+    Snackbar
+        .make(
+            this,
+            message ?: this.context.getString(R.string.default_error),
+            Snackbar.LENGTH_SHORT
+        )
+        .setBackgroundTint(ContextCompat.getColor(this.context, R.color.teal_200))
+        .setTextColor(ContextCompat.getColor(this.context, R.color.black))
+        .show()
+}
+
 fun ViewBinding.showErrorSnackbar(message: String?) {
     this.root.showErrorSnackbar(message)
 }

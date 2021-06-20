@@ -10,11 +10,12 @@ import uk.co.dawg.gnss.collector.di.FirestoreDB
 import javax.inject.Inject
 
 class GnssMeasurementsRepository @Inject constructor(
-    @FirestoreDB(FirestoreDB.Type.MEASUREMENTS) val store: CollectionReference
+    @FirestoreDB(FirestoreDB.Type.MEASUREMENTS) val store: CollectionReference,
+    private val storageFeatureFlags: StorageFeatureFlags
 ) {
     suspend fun upload(measurements: Collection<GnssMeasurement>) {
 
-        if (StorageFeatureFlags.DISABLE_MEASUREMENTS_STORING) return
+        if (!storageFeatureFlags.enableGnnsMeasurements) return
 
         withContext(Dispatchers.IO) {
             measurements.forEach {
@@ -58,6 +59,5 @@ class GnssMeasurementsRepository @Inject constructor(
                 "codeType" to this.codeType
             } else null
         ).toMap()
-
     }
 }

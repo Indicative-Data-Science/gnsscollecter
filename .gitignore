@@ -1,3 +1,8 @@
+
+
+**/mapbox_key.xml
+app/src/main/res/values/mapbox_key.xml
+
 app/google-services.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/android,androidstudio,kotlin,gradle

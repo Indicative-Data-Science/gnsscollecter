@@ -16,3 +16,4 @@ The current base map comes from Mapbox.
 - public_mapbox_key
 - secret_mapbox_key
 - Android studio
+- Google play services json (firebase)

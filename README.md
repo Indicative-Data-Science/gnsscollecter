@@ -1,5 +1,5 @@
 # gnss-collector (Android mobile app)
-
+![Uploading app.gif…]()
 gnss-collector builds on the [GNSSLogger project](https://github.com/google/gps-measurement-tools/tree/master/GNSSLogger) in order to collect raw GNSS data.
 
 ### App

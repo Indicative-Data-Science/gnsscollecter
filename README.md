@@ -1,5 +1,4 @@
 # gnss-collector (Android mobile app)
-
 gnss-collector builds on the [GNSSLogger project](https://github.com/google/gps-measurement-tools/tree/master/GNSSLogger) in order to collect raw GNSS data.
 
 ### App
@@ -16,3 +15,4 @@ The current base map comes from Mapbox.
 - public_mapbox_key
 - secret_mapbox_key
 - Android studio
+- Google play services json (firebase)

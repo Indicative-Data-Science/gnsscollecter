@@ -45,31 +45,27 @@ class MainActivity : AppCompatActivity(), PermissionsListener {
 
         // This needs to run before the setContentView otherwise it crashes
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted ->
-
             if (isGranted) {
                 startGnssService()
             } else {
                 Timber.i("Denied")
             }
         }
-
         initializeMap(savedInstanceState)
 
-
+        // Starts GNSS service and init map button
         binding.btnShareLocation.setOnClickListener {
             checkForFineAccessLocationPermissions {
                 startGnssService()
                 initializeMap(savedInstanceState)
             }
         }
-
+        // Zoom to user location on 1st init
         binding.btnFocus.setOnClickListener {
             if(this@MainActivity::locationComponent.isInitialized)
                 focusOnUserLocation()
@@ -98,8 +94,7 @@ class MainActivity : AppCompatActivity(), PermissionsListener {
                 .getFromLocation(it.latitude, it.longitude, 1)
 
             addresses.firstOrNull()?.getAddressLine(0)?.let { addr ->
-                binding.txtLocation.text = "Im in '$addr'"
-
+                binding.txtLocation.text = "Current location: '$addr'"
                 if (binding.txtLocation.visibility == View.GONE) {
                     binding.txtLocation.visibility = View.VISIBLE
                 }

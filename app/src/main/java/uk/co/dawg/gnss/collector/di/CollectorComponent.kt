@@ -6,8 +6,8 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
 import uk.co.dawg.gnss.collector.CollectorApplication
-import uk.co.dawg.gnss.collector.location.service.GnssCollectorService
 import uk.co.dawg.gnss.collector.MainActivity
+import uk.co.dawg.gnss.collector.location.service.GnssCollectorService
 import javax.inject.Singleton
 
 @Singleton
@@ -15,6 +15,7 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         AndroidSupportInjectionModule::class,
+        AppModule::class,
         StorageModule::class,
         GnssCollectorService.Module::class,
         FirebaseModule::class,

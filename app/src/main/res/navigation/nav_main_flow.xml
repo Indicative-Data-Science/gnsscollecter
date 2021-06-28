@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main_flow"
+    app:startDestination="@id/frag_splash">
+
+
+    <fragment
+        android:id="@+id/frag_splash"
+        android:name="uk.co.dawg.gnss.collector.presentation.splash.SplashFragment"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_frag_splash_to_frag_map"
+            app:destination="@id/frag_map" />
+        <action
+            android:id="@+id/action_frag_splash_to_frag_onboarding"
+            app:destination="@id/frag_onboarding" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/frag_onboarding"
+        android:name="uk.co.dawg.gnss.collector.presentation.onboarding.OnboardingFragment">
+        <action
+            android:id="@+id/action_frag_onboarding_to_frag_map"
+            app:destination="@id/frag_map" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/frag_map"
+        android:name="uk.co.dawg.gnss.collector.presentation.map.MapFragment"
+        tools:layout="@layout/fragment_map" />
+
+
+</navigation>

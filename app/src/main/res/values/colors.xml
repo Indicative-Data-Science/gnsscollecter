@@ -6,10 +6,10 @@
     <color name="purple_200">#9A8F97</color>
     <color name="purple_500">#C3BABA</color>
     <color name="purple_700">#E9E3E6</color>
-    <color name="teal_200">#FFFFFF</color>
-    <color name="teal_700">#FFFFFF</color>
-    <color name="black">#313639</color>
-    <color name="white">#FFFFFF</color>
+    <color name="teal_200">#736F72</color>
+    <color name="teal_700">#B2B2B2</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#313639</color>
 
     <color name="salmon_red">#FA8072</color>
 </resources>

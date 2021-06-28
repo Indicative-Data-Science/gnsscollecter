@@ -1,17 +1,25 @@
 package uk.co.dawg.gnss.collector.data
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.location.GnssMeasurement
-import com.google.firebase.firestore.CollectionReference
+import android.location.Location
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import uk.co.dawg.gnss.collector.di.FirestoreDB
+import uk.co.dawg.gnss.collector.data.storage.GnssDao
+import uk.co.dawg.gnss.collector.data.storage.GnssEntity.Companion.toEntity
 import javax.inject.Inject
 
 class GnssMeasurementsRepository @Inject constructor(
-    @FirestoreDB(FirestoreDB.Type.MEASUREMENTS) val store: CollectionReference,
-    private val storageFeatureFlags: StorageFeatureFlags
+    private val context: Context,
+    private val storageFeatureFlags: StorageFeatureFlags,
+    private val dao: GnssDao,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ) {
     suspend fun upload(measurements: Collection<GnssMeasurement>) {
 
@@ -20,44 +28,30 @@ class GnssMeasurementsRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             measurements.forEach {
                 try {
-                    store.add(it.toMap()).await()
+                    val lastLocation = getLastLocationSafe()
+                    dao.insertAll(it.toEntity(lastLocation))
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
             }
 
-            Timber.d("Submitted ${measurements.size} measurements")
+            Timber.d("Stored ${measurements.size} measurements")
         }
     }
 
-    private fun GnssMeasurement.toMap(): Map<String, Any?> {
-        return setOfNotNull(
-            "accumulated_delta_range_meters" to this.accumulatedDeltaRangeMeters,
-            "accumulatedDeltaRangeState" to this.accumulatedDeltaRangeState,
-            "accumulated_delta_range_uncertainty_meters" to this.accumulatedDeltaRangeUncertaintyMeters,
-            "automaticGainControlLevelDb" to this.automaticGainControlLevelDb,
-            "basebandCn0DbHz" to this.basebandCn0DbHz,
-            "carrierFrequencyHz" to this.carrierFrequencyHz,
-            //"carrierFrequencyHz" to this.carrierPhase, Deprecated
-            //"carrierFrequencyHz" to this.carrierPhaseUncertainty, Deprecated
-            "cn0DbHz" to this.cn0DbHz,
-            "constellationType" to this.constellationType,
-            "fullInterSignalBiasNanos" to this.fullInterSignalBiasNanos,
-            "fullInterSignalBiasUncertaintyNanos" to this.fullInterSignalBiasUncertaintyNanos,
-            "multipathIndicator" to this.multipathIndicator,
-            "pseudorangeRateMetersPerSecond" to this.pseudorangeRateMetersPerSecond,
-            "pseudorangeRateUncertaintyMetersPerSecond" to this.pseudorangeRateUncertaintyMetersPerSecond,
-            "receivedSvTimeNanos" to this.receivedSvTimeNanos,
-            "receivedSvTimeUncertaintyNanos" to this.receivedSvTimeUncertaintyNanos,
-            "satelliteInterSignalBiasNanos" to this.satelliteInterSignalBiasNanos,
-            "satelliteInterSignalBiasUncertaintyNanos" to this.satelliteInterSignalBiasUncertaintyNanos,
-            "snrInDb" to this.snrInDb,
-            "state" to this.state,
-            "svid" to this.svid,
-            "timeOffsetNanos" to this.timeOffsetNanos,
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                "codeType" to this.codeType
-            } else null
-        ).toMap()
+
+    private suspend fun getLastLocationSafe(): Location? {
+        return if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            null
+        } else {
+            fusedLocationProviderClient.lastLocation.await()
+        }
     }
 }

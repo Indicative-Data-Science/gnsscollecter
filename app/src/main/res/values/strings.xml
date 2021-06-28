@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">GnssCollector</string>
     <string name="share_location">Share Location</string>
-    <string name="gnss_service_rationale">We are connecting to the satellites in the sky. Tap stop to terminate the connection. </string>
+    <string name="gnss_service_rationale">We are gathering your location information.</string>
     <string name="default_error">Oops, something went wrong</string>
     <string name="track_gnss">Track GNSS</string>
+    <string name="next">Next</string>
+    <string name="explanation">Welcome! The GNSS-collector app is developed by the Indicative Data Science lab at the University of Glasgow, which investigates methods for using crowdsourced GNSS data for mapping. This application provides an interface to collect raw GNSS data which can be analysed in our GnssMapper python package.</string>
+    <string name="howto">To use the app, you must enable location permissions in order to accurately collect GNSS data. Once you have accepted location permissions, tap once on the location icon to find your current location, tap again on the location icon to see your current postion (you can change this if the GPS system in your phone is not accurate) and then press Track GNSS to begin recording. To stop recording data, you must turn off the application through the notifications window of the device.   </string>
 </resources>

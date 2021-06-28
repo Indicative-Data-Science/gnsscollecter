@@ -1,6 +1,5 @@
 package uk.co.dawg.gnss.collector.location.gnss
 
-import android.location.GnssMeasurement
 import android.location.GnssMeasurementsEvent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ class GnssMeasurementsCallback @Inject constructor(
     override fun onGnssMeasurementsReceived(eventArgs: GnssMeasurementsEvent?) {
         super.onGnssMeasurementsReceived(eventArgs)
 
-        val measurements = eventArgs?.measurements?: emptyList()
+        val measurements = eventArgs?.measurements ?: emptyList()
 
         GlobalScope.launch { repository.upload(measurements) }
     }

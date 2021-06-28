@@ -1,7 +1,6 @@
 package uk.co.dawg.gnss.collector.location.service
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -12,6 +11,9 @@ import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import dagger.android.AndroidInjection
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import uk.co.dawg.gnss.collector.domain.UploadAndClearGnssMeasurementsUseCase
 import uk.co.dawg.gnss.collector.location.gnss.GnssAntennaInfoListener
 import uk.co.dawg.gnss.collector.location.gnss.GnssMeasurementsCallback
 import uk.co.dawg.gnss.collector.location.gnss.GnssNavigationMessageCallback
@@ -35,6 +37,9 @@ class GnssCollectorService : Service(), ForegroundServiceHelper {
 
     lateinit var locationManager: LocationManager
 
+    @Inject
+    lateinit var uploadAndClearGnssMeasurementsUseCase: UploadAndClearGnssMeasurementsUseCase
+
     val exec = Executors.newFixedThreadPool(4)
 
 
@@ -42,8 +47,14 @@ class GnssCollectorService : Service(), ForegroundServiceHelper {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
+
         when (intent?.action) {
             ForegroundServiceHelper.ACTION_STOP_SERVICE -> {
+
+                GlobalScope.launch {
+                    uploadAndClearGnssMeasurementsUseCase.run()
+                }
+
                 getNotificationManager().cancel(NOTIFICATION_ID)
                 stopSelf()
             }

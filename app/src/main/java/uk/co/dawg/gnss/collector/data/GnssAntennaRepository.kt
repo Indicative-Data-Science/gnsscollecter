@@ -2,10 +2,6 @@ package uk.co.dawg.gnss.collector.data
 
 import android.location.GnssAntennaInfo
 import com.google.firebase.firestore.CollectionReference
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import uk.co.dawg.gnss.collector.di.FirestoreDB
 import javax.inject.Inject
 
@@ -14,21 +10,10 @@ class GnssAntennaRepository @Inject constructor(
     private val storageFeatureFlags: StorageFeatureFlags
 ) {
 
-    suspend fun upload(measurements: List<GnssAntennaInfo>) {
+    fun upload() {
 
         if (!storageFeatureFlags.enableAntennaMeasurements) return
 
-        withContext(Dispatchers.IO) {
-            measurements.forEach {
-                try {
-                    store.add(it.toMap()).await()
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            }
-
-            Timber.d("Submitted ${measurements.size} measurements")
-        }
     }
 
     private fun GnssAntennaInfo.toMap(): Map<String, Any?> {

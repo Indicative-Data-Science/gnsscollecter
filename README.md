@@ -1,16 +1,16 @@
-gnss-collector (Android mobile app)
+#gnss-collector (Android mobile app)
 gnss-collector builds on the GNSSLogger project in order to collect raw GNSS data.
 
-App
+##App
 This application is built using Kotlin and Dagger
 
-Database
+##Database
 Data is sent from the application to a cloud firestore database in real time.
 
-Map
+##Map
 The current base map comes from Mapbox.
 
-Requirements
+##Requirements
 public_mapbox_key
 secret_mapbox_key
 Android studio

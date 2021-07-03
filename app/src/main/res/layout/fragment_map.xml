@@ -29,12 +29,12 @@
         tools:text="Im in heaven" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_focus"
+        android:id="@+id/btn_show_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_current_location"
+        android:src="@drawable/ic_god_praise_the_sun"
         android:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@id/btn_share_location"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -43,12 +43,23 @@
         android:id="@+id/btn_share_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_goneMarginBottom="24dp"
         android:backgroundTint="?attr/colorSecondaryVariant"
         android:drawableStart="@drawable/ic_location"
         android:text="@string/track_gnss"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_save_selected_location"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save_selected_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_location"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

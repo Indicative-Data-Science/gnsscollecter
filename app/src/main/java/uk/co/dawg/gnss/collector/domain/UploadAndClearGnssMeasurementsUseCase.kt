@@ -15,7 +15,8 @@ class UploadAndClearGnssMeasurementsUseCase @Inject constructor(
     @FirestoreDB(FirestoreDB.Type.MEASUREMENTS)
     private val gnssFirestore: CollectionReference,
     private val fireStore: FirebaseFirestore,
-    private val gnssDao: GnssDao
+    private val gnssDao: GnssDao,
+    private val userOverrideLocationRepository: UserOverrideLocationRepository
 ) {
 
     suspend fun run() = withContext(Dispatchers.IO) {
@@ -26,9 +27,19 @@ class UploadAndClearGnssMeasurementsUseCase @Inject constructor(
             val docRef = gnssFirestore.document(UUID.randomUUID().toString())
 
             fireStore.runBatch { batch ->
-                batch.set(docRef, mapOf("data" to measures))
+
+                val userOverrideLocation = userOverrideLocationRepository.getOverrideLocation()
+
+                batch.set(
+                    docRef,
+                    mapOf(
+                        "data" to measures,
+                        "user_override_location" to userOverrideLocation
+                    )
+                )
             }.await()
 
+            userOverrideLocationRepository.clearOverrideLocation()
         } catch (e: Exception) {
             Timber.e(e)
         }

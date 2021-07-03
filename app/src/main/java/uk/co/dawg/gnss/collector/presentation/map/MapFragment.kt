@@ -2,6 +2,7 @@ package uk.co.dawg.gnss.collector.presentation.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.location.Geocoder
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -26,17 +28,23 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import dagger.android.ContributesAndroidInjector
+import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
 import uk.co.dawg.gnss.collector.R
 import uk.co.dawg.gnss.collector.databinding.FragmentMapBinding
+import uk.co.dawg.gnss.collector.domain.UserOverrideLocationRepository
 import uk.co.dawg.gnss.collector.extensions.hasPermission
 import uk.co.dawg.gnss.collector.location.service.GnssCollectorService
+import uk.co.dawg.gnss.collector.presentation.map.MapHelper.Companion.getCameraLatLng
 import uk.co.dawg.gnss.collector.showErrorSnackbar
 import uk.co.dawg.gnss.collector.showInfoSnackbar
 import java.util.*
+import javax.inject.Inject
 
-class MapFragment : Fragment(), PermissionsListener {
+
+class MapFragment : Fragment(), PermissionsListener, OptionsBottomSheet.ActionsListener {
 
     private lateinit var binding: FragmentMapBinding
 
@@ -45,6 +53,20 @@ class MapFragment : Fragment(), PermissionsListener {
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapboxStyle: Style
     private lateinit var locationComponent: LocationComponent
+
+    @Inject
+    lateinit var mapHelper: MapHelper
+
+    @Inject
+    lateinit var overrideLocation: UserOverrideLocationRepository
+
+    // Markers
+    private var hoveringMarker: ImageView? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        AndroidSupportInjection.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,17 +97,14 @@ class MapFragment : Fragment(), PermissionsListener {
         binding.btnShareLocation.setOnClickListener {
             checkForFineAccessLocationPermissions {
                 startGnssService()
-                initializeMap(savedInstanceState)
+
+                if (!this@MapFragment::mapboxMap.isInitialized) initializeMap(savedInstanceState)
             }
         }
         // Zoom to user location on 1st init
-        binding.btnFocus.setOnClickListener {
+        binding.btnShowOptions.setOnClickListener {
 
-            if (this@MapFragment::locationComponent.isInitialized)
-                focusOnUserLocation()
-            else {
-                initializeMap(savedInstanceState)
-            }
+            OptionsBottomSheet().setListener(this).show(parentFragmentManager, "something")
         }
     }
 
@@ -136,9 +155,12 @@ class MapFragment : Fragment(), PermissionsListener {
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync { mapboxMap ->
             this@MapFragment.mapboxMap = mapboxMap
-            mapboxMap.setStyle(Style.TRAFFIC_NIGHT) {
+            mapboxMap.setStyle(Style.DARK) {
                 this@MapFragment.mapboxStyle = it
                 enableLocationComponent(it, mapboxMap)
+
+                hoveringMarker = mapHelper.initializeHoveringMarker(mapView)
+                mapHelper.initDroppedMarker(mapboxStyle)
             }
         }
     }
@@ -228,6 +250,33 @@ class MapFragment : Fragment(), PermissionsListener {
         }
     }
     //endregion
+
+    override fun onFindMyLocationPressed() {
+        if (this@MapFragment::locationComponent.isInitialized)
+            focusOnUserLocation()
+        else {
+            initializeMap(null)
+        }
+    }
+
+    override fun onSelectLocationPressed() {
+        hoveringMarker?.visibility = View.VISIBLE
+        mapHelper.showBlueMarkerOnCameraCenter(mapboxMap, mapboxStyle)
+
+
+        binding.btnSaveSelectedLocation.visibility = View.VISIBLE
+        binding.btnSaveSelectedLocation.setOnClickListener {
+            val overrideLocation = mapboxMap.getCameraLatLng()
+            this.overrideLocation.saveLocation(
+                overrideLocation.latitude,
+                overrideLocation.longitude
+            )
+            mapHelper.showBlueMarkerOnCameraCenter(mapboxMap, mapboxStyle)
+            binding.btnSaveSelectedLocation.visibility = View.GONE
+            hoveringMarker?.visibility = View.GONE
+        }
+    }
+
 
     @dagger.Module
     abstract class Module {

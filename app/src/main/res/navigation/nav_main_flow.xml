@@ -9,21 +9,29 @@
     <fragment
         android:id="@+id/frag_splash"
         android:name="uk.co.dawg.gnss.collector.presentation.splash.SplashFragment"
+
         tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_frag_splash_to_frag_map"
-            app:destination="@id/frag_map" />
+            app:destination="@id/frag_map"
+            app:popUpTo="@id/frag_splash"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_frag_splash_to_frag_onboarding"
-            app:destination="@id/frag_onboarding" />
+            app:destination="@id/frag_onboarding"
+            app:popUpTo="@id/frag_splash"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/frag_onboarding"
-        android:name="uk.co.dawg.gnss.collector.presentation.onboarding.OnboardingFragment">
+        android:name="uk.co.dawg.gnss.collector.presentation.onboarding.OnboardingFragment"
+        tools:layout="@layout/fragment_onboarding">
         <action
             android:id="@+id/action_frag_onboarding_to_frag_map"
-            app:destination="@id/frag_map" />
+            app:destination="@id/frag_map"
+            app:popUpTo="@id/frag_onboarding"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

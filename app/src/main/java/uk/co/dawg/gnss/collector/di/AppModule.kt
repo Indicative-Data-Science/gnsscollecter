@@ -20,6 +20,12 @@ object AppModule {
     }
 
     @Provides
+    @OverrideLocationPrefs
+    fun provideOverrideLocationPrefs(context: Context): SharedPreferences {
+        return context.getSharedPreferences("gnss_override_location", Context.MODE_PRIVATE)
+    }
+
+    @Provides
     @Singleton
     fun provideDatabase(context: Context): GnssDatabase {
         return Room.databaseBuilder(

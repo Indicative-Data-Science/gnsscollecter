@@ -6,9 +6,6 @@ The satellite constellation above our heads and floating in space, provide us wi
 This project can 
 builds on the <a href="https://github.com/google/gps-measurement-tools"> Google GNSS measurement-tools app </a> in order to collect raw GNSS data.
 
-<h2>Features</h2>
-The current base map comes from Mapbox.
-
 <h2>Development Environment</h2>
 The app is written entirely in Kotlin and uses the Gradle build system.
 

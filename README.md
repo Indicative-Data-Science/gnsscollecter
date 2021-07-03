@@ -40,4 +40,3 @@ In order to run the app locally you will need the declare the following things:
   <li> Firebase account with firestore database </li>
   <li> Google play services json file </li>
 </ul>
-We have written a blog post on how to run the build and run the application locally. 
